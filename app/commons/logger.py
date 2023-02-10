@@ -61,8 +61,6 @@ class Logger():
                 self._logger.debug(args.__str__)
             case LOGTYPE.INFO:
                 self._logger.info(args.__str__)
-            case default:
-                pass
 
 
 logger = Logger()

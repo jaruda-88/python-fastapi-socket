@@ -1,6 +1,5 @@
 import uvicorn
 from fastapi import FastAPI
-from dataclasses import asdict
 from commons.config import conf, LOGTYPE
 from commons.logger import logger
 from routers.chats import index
@@ -14,11 +13,9 @@ def create_app():
     '''
 
     # load config
-    dcConfig = conf()
-    dictConf = asdict(dcConfig)
-    debug : LOGTYPE = dictConf.get("DEBUG")
+    config = conf()
 
-    app = FastAPI(debug= True if debug == LOGTYPE.DEBUG else False)
+    app = FastAPI(debug = True if config.DEBUG == LOGTYPE.DEBUG else False)
 
     app.add_middleware(
         CORSMiddleware,
@@ -29,10 +26,12 @@ def create_app():
     )
 
     # set logger
-    logger.initialize(mode=debug)
+    logger.initialize(mode=config.DEBUG)
 
     # set router
     app.include_router(index.router) 
+
+    logger.print('create', 'app!')
 
     return app
 
