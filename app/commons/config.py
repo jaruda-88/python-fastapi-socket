@@ -5,9 +5,10 @@ from pydantic import BaseModel
 base_dir = path.dirname(path.dirname(path.abspath(__file__)))
 
 class LOGTYPE(Enum):
-    DEBUG = 1
-    INFO = 2
-    NULL = 3
+    TEST = 1
+    DEBUG = 2
+    INFO = 3
+    NULL = 4
 
 class Config(BaseModel):
     ''' base configuration '''
@@ -22,11 +23,11 @@ class ProdConfig(Config):
 
 
 class LocalConfig(Config):
-    DEBUG: LOGTYPE = LOGTYPE.INFO
+    DEBUG: LOGTYPE = LOGTYPE.DEBUG
 
 
 class TestConfig(Config):
-    DEBUG: LOGTYPE = LOGTYPE.DEBUG
+    DEBUG: LOGTYPE = LOGTYPE.TEST
 
 
 def conf():

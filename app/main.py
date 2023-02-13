@@ -2,8 +2,9 @@ import uvicorn
 from fastapi import FastAPI
 from commons.config import conf, LOGTYPE
 from commons.logger import logger
-from routers.chats import index
+from routers.room_management import generation
 from starlette.middleware.cors import CORSMiddleware
+from sockets.manager import WSManager
 
 
 def create_app():
@@ -15,7 +16,7 @@ def create_app():
     # load config
     config = conf()
 
-    app = FastAPI(debug = True if config.DEBUG == LOGTYPE.DEBUG else False)
+    app = FastAPI(debug = True if config.DEBUG == LOGTYPE.DEBUG or config.DEBUG == LOGTYPE.TEST else False)
 
     app.add_middleware(
         CORSMiddleware,
@@ -28,10 +29,11 @@ def create_app():
     # set logger
     logger.initialize(mode=config.DEBUG)
 
-    # set router
-    app.include_router(index.router) 
+    # set websocket manager
+    WSManager.initialize()
 
-    logger.print('create', 'app!')
+    # set router
+    app.include_router(generation.router) 
 
     return app
 

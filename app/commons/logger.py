@@ -1,4 +1,5 @@
 import logging
+import sys
 from .config import LOGTYPE
 
 
@@ -61,6 +62,8 @@ class Logger():
                 self._logger.debug(args.__str__)
             case LOGTYPE.INFO:
                 self._logger.info(args.__str__)
+            case LOGTYPE.TEST:
+                print(args.__str__, file=sys.stderr)
 
-
+    
 logger = Logger()
