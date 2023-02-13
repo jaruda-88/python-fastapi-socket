@@ -3,6 +3,7 @@ from enum import Enum
 from pydantic import BaseModel
 
 base_dir = path.dirname(path.dirname(path.abspath(__file__)))
+app_dir = path.dirname(path.dirname(__file__))
 
 class LOGTYPE(Enum):
     TEST = 1
@@ -14,6 +15,7 @@ class Config(BaseModel):
     ''' base configuration '''
 
     BASE_DIR: str = base_dir
+    APP_DIR: str = app_dir
 
     DEBUG: None | LOGTYPE
 
