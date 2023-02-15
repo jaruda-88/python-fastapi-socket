@@ -2,7 +2,7 @@ import uvicorn
 from fastapi import FastAPI
 from commons.config import conf, LOGTYPE
 from commons.logger import logger
-from routers.room_management import index, dml
+from routers.room_management import index
 from starlette.middleware.cors import CORSMiddleware
 from sockets.manager import WSManager
 
@@ -35,8 +35,6 @@ def create_app():
     # set router
     if config.DEBUG == LOGTYPE.TEST:
         app.include_router(index.router) 
-
-    app.include_router(dml.router)
 
     return app
 

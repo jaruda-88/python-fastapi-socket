@@ -28,6 +28,7 @@ config = {
 class Logger():
     
     def __init__(self):
+        
         self._logger = None
         self._mode : LOGTYPE = LOGTYPE.NULL 
 
@@ -59,11 +60,11 @@ class Logger():
 
         match self._mode:
             case LOGTYPE.DEBUG:
-                self._logger.debug(args.__str__)
+                self._logger.debug(', '.join(args))
             case LOGTYPE.INFO:
-                self._logger.info(args.__str__)
+                self._logger.info(', '.join(args))
             case LOGTYPE.TEST:
-                print(args.__str__, file=sys.stderr)
+                print(', '.join(args), file=sys.stderr)
 
     
 logger = Logger()

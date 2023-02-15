@@ -11,7 +11,7 @@ class Manager:
 
     def initialize(self):
         '''
-        set Manager
+        init
         '''
         self._connections: dict = defaultdict(dict)
 
@@ -26,7 +26,7 @@ class Manager:
     def connections(self, room_name:str):
 
         if room_name not in self._connections:
-            self._connections[room_name] = {}
+            self._connections[room_name] = []
 
     
     async def connect(self, websocket: WebSocket, room_name:str, user_name:str):
@@ -37,7 +37,7 @@ class Manager:
         logger.print(f"connected : {self._connections[room_name]}")
 
     
-    def remove(self, websocket: WebSocket, room_name:str, user_name:str):
+    def disconnect(self, websocket: WebSocket, room_name:str, user_name:str):
 
         self._connections[room_name].remove(websocket)
         logger.print(f"disconnecting : {self._connections[room_name]}")
