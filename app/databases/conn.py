@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, declarative_base
 from commons.logger import logger
 
 
@@ -24,12 +23,17 @@ class SQLAlchemy:
         :return:
         '''
 
-        dbUrl = kwargs.get("DB_URL")
+        url = kwargs.get("DB_URL")
+
+        if not url:
+            logger.print('should be set db')
+            return
+
         poolRecycle = kwargs.setdefault("DB_POOL_RECYCLE", 900)
         echo = kwargs.setdefault("DB_ECHO", True)
 
         self._engine = create_engine(
-            dbUrl,
+            url,
             echo=echo,
             pool_recycle=poolRecycle,
             pool_pre_ping=True

@@ -22,13 +22,14 @@ config = {
     },
     "loggers": {
         "debug-log": {"handlers": ["default"], "level": "DEBUG"},
+        "info-log": {"handlers": ["default"], "level": "INFO"},
     },
 }
 
 class Logger():
     
     def __init__(self):
-        
+
         self._logger = None
         self._mode : LOGTYPE = LOGTYPE.NULL 
 
