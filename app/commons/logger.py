@@ -40,7 +40,7 @@ class Logger():
         return self._logger
 
     
-    def initialize(self, mode:LOGTYPE, level:str='debug-log'):
+    def initialize(self, mode:LOGTYPE):
         '''
         set logger
         :param mode: debug true or false
@@ -48,8 +48,12 @@ class Logger():
         :return:
         '''
 
-        self._logger = logging.getLogger(level)
         self._mode = mode
+        match mode:
+            case LOGTYPE.INFO:
+                self._logger = logging.getLogger('info-log')
+            case LOGTYPE.DEBUG:
+                self._logger = logging.getLogger('debug-log')
 
 
     def print(self, *args):

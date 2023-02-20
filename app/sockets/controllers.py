@@ -16,7 +16,7 @@ async def websocket_endpoint(websocket: WebSocket, room_name:str, user_name:str)
             if websocket.application_state == WebSocketState.CONNECTED:
                 data = await websocket.receive_text()
 
-                await WSManager.broadcast(f"data", room_name, user_name)
+                await WSManager.broadcast(f"{data}", room_name, user_name)
     
     except Exception as ex:
         WSManager.disconnect(websocket, room_name, user_name)

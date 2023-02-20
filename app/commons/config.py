@@ -71,7 +71,7 @@ class TestConfig(Config):
     DEBUG: LOGTYPE = LOGTYPE.TEST
     
     def get_db_url(self) -> None | str:
-        return db_url.format(self.DB_USER, self.DB_PWD, '192.168.0.100', 3307, self.DB_NAME) if self.DB_NAME else None
+        return db_url.format('root', 'admin', '192.168.0.100', 3307, 'db_fs')
 
 
 def conf():

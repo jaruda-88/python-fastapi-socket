@@ -84,4 +84,4 @@ class SQLAlchemy:
 
 
 db = SQLAlchemy()
-base = declarative_base()
+Base = declarative_base()

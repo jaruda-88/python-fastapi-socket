@@ -1,0 +1,48 @@
+version: '3.8'
+
+networks:
+  chat-net:
+    driver: bridge
+
+services:
+  fs-db:
+    image: mysql
+    restart: always
+    container_name: fs-db
+    # volumes:
+    #   - ./app/databases/data:/var/lib/mysql
+    environment:
+      TZ: Asia/Seoul
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: db_fs
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    ports:
+      - "3307:3306"
+    networks:
+      - default
+      - chat-net
+    healthcheck:
+      test: "/usr/bin/mysql --user=root --password=admin --execute \"SHOW DATABASES;\""
+      interval: 4s
+      timeout: 60s
+      retries: 10
+  
+  # fs-api:
+  #   build:
+  #     context: ./app
+  #     image: "fs:0.0.1"
+  #     restart: always
+  #     container_name: fs-api
+  #     environment:
+  #       MYSQL_ROOT_PASSWORD: admin
+  #       MYSQL_DATABASE: db_fs
+  #     ports:
+  #       - "8000:8000"
+  #     networks:
+  #       - default
+  #       - chat-net
+  #     depens_on:
+  #       fs-db:
+  #         condition: service_healthy

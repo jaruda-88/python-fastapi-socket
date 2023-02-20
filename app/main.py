@@ -5,7 +5,7 @@ from commons.logger import logger
 from routers.room_management import index
 from starlette.middleware.cors import CORSMiddleware
 from sockets.manager import WSManager
-from databases.conn import db
+from databases.conn import db, Base
 
 
 def create_app():
@@ -37,6 +37,7 @@ def create_app():
         DB_POOL_RECYCLE=config.DB_POOL_RECYCLE, 
         DB_ECHO=config.DB_ECHO
         )
+    Base.metadata.create_all(bind=db.engine)
 
     # set websocket manager
     WSManager.initialize()
