@@ -5,7 +5,7 @@ from commons.logger import logger
 from routers.room_management import index
 from starlette.middleware.cors import CORSMiddleware
 from sockets.manager import WSManager
-from databases.conn import db, Base
+from databases import conn, models
 
 
 def create_app():
@@ -31,13 +31,14 @@ def create_app():
     logger.initialize(mode=config.DEBUG)
 
     # set database
-    db.initialize(
+    conn.db.initialize(
         app, 
         DB_URL=config.get_db_url(), 
         DB_POOL_RECYCLE=config.DB_POOL_RECYCLE, 
         DB_ECHO=config.DB_ECHO
         )
-    Base.metadata.create_all(bind=db.engine)
+    # set models
+    models.Base.metadata.create_all(bind=conn.db.engine)
 
     # set websocket manager
     WSManager.initialize()

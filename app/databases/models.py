@@ -1,3 +1,4 @@
+from databases.conn import Base
 from sqlalchemy import (
     Column,
     Integer,
@@ -6,22 +7,17 @@ from sqlalchemy import (
     func
 )
 from sqlalchemy.orm import Session, relationship
-from conn import Base, db
 
 
-class BaseSchema:
+class BaseModel:
     id = Column(Integer, primary_key=True, index=True)
     create_at = Column(DateTime, nullable=False, default=func.utc_timestamp())
     update_at = Column(DateTime, nullable=False, default=func.utc_timestamp(), onupdate=func.utc_timestamp())
 
-    # def __ini__(self):
-    #     self._q = None
-    #     self._session = None
-    #     self.served = None
 
 
-class Users(Base, BaseSchema):
-    __tablename__ =  "users"
+class Users(Base, BaseModel):
+    __tablename__ =  "tb_users"
 
     pw = Column(String(length=2000), nullable=True)
     name = Column(String(length=255), nullable=True)

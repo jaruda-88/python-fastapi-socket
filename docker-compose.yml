@@ -38,6 +38,7 @@ services:
   #     environment:
   #       MYSQL_ROOT_PASSWORD: admin
   #       MYSQL_DATABASE: db_fs
+  #       API_ENV: local
   #     ports:
   #       - "8000:8000"
   #     networks:
