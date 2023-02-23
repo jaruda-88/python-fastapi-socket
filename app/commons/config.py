@@ -1,4 +1,4 @@
-from os import path, environ
+from os import path, environ, getenv
 from enum import Enum
 from pydantic import BaseModel
 from abc import ABC, abstractmethod
@@ -47,6 +47,13 @@ class Config(ModifiedBaseModel, ABC, is_abstract=True):
     DB_NAME: None | str = environ.get("MYSQL_DATABASE", None)
     DB_ECHO: bool = True
     DB_POOL_RECYCLE: int = 900
+
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30   # 30분
+    REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7     # 7일
+    ALGORITH: str = "HS256"
+    JWT_SECRET_KEY: str = getenv('JWT_SECRET_KEY')
+    JWT_REFRESH_SECRET_KEY: str = getenv('JWT_REFRESH_SECRET_KEY')
+
 
     @abstractmethod
     def get_db_url(self) -> None | str:
