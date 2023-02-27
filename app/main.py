@@ -2,10 +2,11 @@ import uvicorn
 from fastapi import FastAPI
 from commons.config import conf, LOGTYPE
 from commons.logger import logger
-from routers.room_management import index
+from routers.rooms import test_client
+from routers import auths
 from starlette.middleware.cors import CORSMiddleware
 from sockets.manager import WSManager
-from databases import conn, models
+from databases import handler, models
 
 
 def create_app():
@@ -31,21 +32,22 @@ def create_app():
     logger.initialize(mode=config.DEBUG)
 
     # set database
-    conn.db.initialize(
+    handler.db.initialize(
         app, 
         DB_URL=config.get_db_url(), 
         DB_POOL_RECYCLE=config.DB_POOL_RECYCLE, 
         DB_ECHO=config.DB_ECHO
         )
     # set models
-    models.Base.metadata.create_all(bind=conn.db.engine)
+    models.Base.metadata.create_all(bind=handler.db.engine)
 
     # set websocket manager
     WSManager.initialize()
 
     # set router
     if config.DEBUG == LOGTYPE.TEST:
-        app.include_router(index.router) 
+        app.include_router(test_client.router) 
+    app.include_router(auths.router)
 
     return app
 

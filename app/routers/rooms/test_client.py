@@ -8,7 +8,7 @@ router = APIRouter()
 templates = Jinja2Templates(directory=os.path.join(base_dir, "templates"))
 
 
-@router.get("/clinet/{room_name}/{user_name}")
+@router.get("/clinet/{room_name}/{user_name}", tags=["test"])
 async def test_clinet(request: Request, room_name, user_name):
     '''
     test client

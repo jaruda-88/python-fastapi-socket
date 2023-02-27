@@ -1,6 +1,7 @@
 from passlib.context import CryptContext
 from jose import jwt
 
+# pip install "python-jose[cryptography]" "passlib[bcrypt]" 
 password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 

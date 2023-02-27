@@ -1,4 +1,4 @@
-from databases.conn import Base
+from databases.handler import Base
 from sqlalchemy import (
     Column,
     Integer,
@@ -12,15 +12,42 @@ from sqlalchemy.orm import Session, relationship
 
 class BaseModel:
     id = Column(Integer, primary_key=True, index=True)
-    create_at = Column(DateTime, nullable=False, default=func.utc_timestamp())
-    update_at = Column(DateTime, nullable=False, default=func.utc_timestamp(), onupdate=func.utc_timestamp())
+    created_at = Column(DateTime, nullable=False, default=func.utc_timestamp())
+    updated_at = Column(DateTime, nullable=False, default=func.utc_timestamp(), onupdate=func.utc_timestamp())
 
+    def __hash__(self):
+        return hash(self.id)
+
+    def __columns__(self):
+        return [ c for c in self.__table__.columns if c.primary_key is False and c.name != "created_at"]
+    
+    @classmethod
+    def create(cls, session: Session, auto_commit=False, **kwargs):
+        '''
+        생성 전용 함수
+        :param session: db session
+        :param auto_commit: 자동 커밋
+        :param kwargs: data
+        :return:
+        '''
+
+        obj = cls()
+        for col in obj.__columns__():
+            col_name = col.name
+            if col_name in kwargs:
+                setattr(obj, col_name, kwargs.get(col_name))
+        session.add(obj)
+        session.flush()
+        if auto_commit:
+            session.commit()
+        
+        return obj
 
 
 class Users(Base, BaseModel):
     __tablename__ =  "tb_users"
 
-    pw = Column(String(length=2000), nullable=False)
+    password = Column(String(length=2000), nullable=False)
     user_name = Column(String(length=255), nullable=False)
     nick_name = Column(String(length=255), nullable=True)
 
