@@ -8,6 +8,7 @@ from sqlalchemy import (
     func
 )
 from sqlalchemy.orm import Session, relationship
+from databases.handler import db
 
 
 class BaseModel:
@@ -42,6 +43,32 @@ class BaseModel:
             session.commit()
         
         return obj
+
+    @classmethod
+    def get(cls, session: Session = None, **kwargs):
+        '''
+        get a row
+        :param session:
+        :param kwargs:
+        :return:
+        '''
+
+        s = next(db.session()) if not session else session
+        query = s.query(cls)
+
+        for key, val in kwargs.items():
+            col = getattr(cls, key)
+            query = query.filter(col == val)
+
+        if query.count() > 1:
+            raise Exception('Only one row')
+        
+        result = query.first()
+
+        if not session:
+            s.close()
+
+        return result
 
 
 class Users(Base, BaseModel):

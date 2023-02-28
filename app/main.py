@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from commons.config import conf, LOGTYPE
 from commons.logger import logger
 from routers.rooms import test_client
-from routers import auths
+from routers.users import auths, reads
 from starlette.middleware.cors import CORSMiddleware
 from sockets.manager import WSManager
 from databases import handler, models
@@ -48,6 +48,7 @@ def create_app():
     if config.DEBUG == LOGTYPE.TEST:
         app.include_router(test_client.router) 
     app.include_router(auths.router)
+    app.include_router(reads.router)
 
     return app
 

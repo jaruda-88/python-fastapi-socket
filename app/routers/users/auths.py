@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends
-from starlette.responses import JSONResponse
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
+from starlette.responses import JSONResponse
 from commons.utils import get_hashed_password
 from databases.handler import db
 from databases.models import Users
-from databases.schemas import UserRegister, Base
+from databases.schemas import UserRegister, Base, Token
 
 router = APIRouter(prefix="/auth")
 
@@ -24,4 +25,17 @@ async def register(data: UserRegister, session: Session = Depends(db.session)):
     except Exception as ex:
         return JSONResponse(status_code=400, content=dict(msg=f"{ex.args[0]}"))
     else:
-        return { 'id' : newUser.id }
+        return dict(id=newUser.id)
+
+
+@router.post('/signin', status_code=200, response_model=Token, tags=["user_management"])
+async def login(data: OAuth2PasswordRequestForm = Depends()):
+    '''
+    로그인
+    :param data:
+    :param session:
+    :return:
+    '''
+    
+    return 'working'
+

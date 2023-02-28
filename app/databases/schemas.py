@@ -3,16 +3,24 @@ from pydantic import BaseModel
 class Base(BaseModel):
     id: int
 
+class Check(BaseModel):
+    verify: bool
 
-# class User(BaseModel):
+class Token(BaseModel):
+    authorization: str
 
-#     class Config:
-#         orm_mode = True
-
-class UserRegister(BaseModel):
+class UserBase(BaseModel):
     user_name: str
     nick_name: str
-    password: str
 
     class Config:
         orm_mode = True
+
+class UserRegister(UserBase):
+    password: str
+
+class UserInfo(UserBase, Base):
+    created_at: str
+    updated_at: str
+    
+
