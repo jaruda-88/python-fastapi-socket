@@ -22,14 +22,14 @@ def get_hashed_password(password: str) -> str:
     return password_context.hash(password)
 
 
-def verify_password(password: str) -> bool:
+def verify_password(password: str, hash_pwd: str) -> bool:
     '''
     password 검증
     :param password: origin pwd
     :return: bool
     '''
 
-    return password_context.verify(password, get_hashed_password(password))
+    return password_context.verify(password, hash_pwd)
 
 
 def create_access_token(subject: Union[str, Any], expires_delta: int = None) -> str:
@@ -49,3 +49,4 @@ def create_access_token(subject: Union[str, Any], expires_delta: int = None) -> 
     encoded = jwt.encode(payload, JWT_SECRET_KEY, ALGORITH)
 
     return encoded
+

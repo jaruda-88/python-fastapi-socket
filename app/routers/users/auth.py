@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from starlette.responses import JSONResponse
-from commons.utils import get_hashed_password
+from commons.utils import get_hashed_password, verify_password, create_access_token
 from databases.handler import db
 from databases.models import Users
 from databases.schemas import UserRegister, Base, Token
@@ -36,6 +36,24 @@ async def login(data: OAuth2PasswordRequestForm = Depends()):
     :param session:
     :return:
     '''
+
+    try:
+        name, pwd = data.username, data.password
+
+        hashPwd = get_hashed_password(pwd)
+
+        if not verify_password(pwd, hashPwd):
+            raise Exception('incorrect password')
     
-    return 'working'
+        user = Users.get(user_name=name, password=hashPwd)
+
+        if user is None:
+            raise Exception('incorrect user info')
+
+        token = create_access_token(user.id)
+
+    except Exception as ex:
+        return JSONResponse(status_code=400, content=dict(msg=f"{ex.args[0]}"))
+    else:
+        return dict(authorization=token)
 

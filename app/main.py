@@ -1,9 +1,10 @@
 import uvicorn
 from fastapi import FastAPI
+from fastapi.security import OAuth2PasswordBearer
 from commons.config import conf, LOGTYPE
 from commons.logger import logger
 from routers.rooms import test_client
-from routers.users import auths, reads
+from routers.users import auth, verify
 from starlette.middleware.cors import CORSMiddleware
 from sockets.manager import WSManager
 from databases import handler, models
@@ -47,8 +48,8 @@ def create_app():
     # set router
     if config.DEBUG == LOGTYPE.TEST:
         app.include_router(test_client.router) 
-    app.include_router(auths.router)
-    app.include_router(reads.router)
+    app.include_router(auth.router)
+    app.include_router(verify.router)
 
     return app
 
