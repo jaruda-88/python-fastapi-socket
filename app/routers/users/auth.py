@@ -40,16 +40,14 @@ async def login(data: OAuth2PasswordRequestForm = Depends()):
     try:
         name, pwd = data.username, data.password
 
-        hashPwd = get_hashed_password(pwd)
-
-        if not verify_password(pwd, hashPwd):
-            raise Exception('incorrect password')
-    
-        user = Users.get(user_name=name, password=hashPwd)
+        user = Users.get(user_name=name)
 
         if user is None:
             raise Exception('incorrect user info')
 
+        if not verify_password(pwd, user.password):
+            raise Exception('incorrect password')
+        
         token = create_access_token(user.id)
 
     except Exception as ex:
