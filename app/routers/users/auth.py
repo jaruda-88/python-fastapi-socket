@@ -48,7 +48,7 @@ async def login(data: OAuth2PasswordRequestForm = Depends()):
         if not verify_password(pwd, user.password):
             raise Exception('incorrect password')
         
-        token = create_access_token(user.id)
+        token = create_access_token(user.user_name)
 
     except Exception as ex:
         return JSONResponse(status_code=400, content=dict(msg=f"{ex.args[0]}"))

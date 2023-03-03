@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 from commons.logger import logger
+from contextlib import contextmanager
 
 
 class SQLAlchemy:
@@ -51,6 +52,26 @@ class SQLAlchemy:
             self._session.close_all()
             self._engine.dispose()
             logger.print("disconnected DB")
+
+    
+    @contextmanager
+    def scope_session(self):
+        '''
+        Provide a transactional scope around a series of operations.
+        :param self:
+        :return:
+        '''
+
+        s = self._session()
+
+        try:
+            yield s
+            s.commit()
+        except:
+            s.rollback()
+            raise
+        finally:
+            s.close
 
     
     def maintain_session(self):
