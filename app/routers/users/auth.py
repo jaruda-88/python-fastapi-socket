@@ -21,6 +21,17 @@ async def register(data: UserRegister, session: Session = Depends(db.session)):
 
     try:
         hashPw = get_hashed_password(data.password)
+
+        user = Users.get(session, user_name=data.user_name)
+
+        if user:
+            raise Exception('already exists user name')
+
+        user = Users.get(session, nick_name=data.nick_name)
+
+        if user:
+            raise Exception('already exists nick name')
+
         newUser = Users.create(session, True, user_name=data.user_name, nick_name=data.nick_name, password=hashPw)
     except Exception as ex:
         return JSONResponse(status_code=400, content=dict(msg=f"{ex.args[0]}"))
@@ -43,7 +54,7 @@ async def login(data: OAuth2PasswordRequestForm = Depends()):
         user = Users.get(user_name=name)
 
         if user is None:
-            raise Exception('incorrect user info')
+            raise Exception('incorrect user name')
 
         if not verify_password(pwd, user.password):
             raise Exception('incorrect password')

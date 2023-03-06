@@ -70,6 +70,36 @@ class BaseModel:
 
         return result
 
+    @classmethod
+    def update(cls, session: Session, update: dict, **kwargs):
+        '''
+        update a row
+        :param session:
+        :param upddate:
+        :param kwargs:
+        :return:
+        '''
+
+        s = next(db.session()) if not session else session
+        query = s.query(cls)
+
+        for key, val in kwargs.items():
+            col = getattr(cls, key)
+            query = query.filter(col == val)
+        
+        if query.count() > 1:
+            raise Exception('Only one row')
+
+        result = query.first()
+        result.update(update)
+        s.commit()
+
+        if not session:
+            s.close()
+
+        return result 
+
+
 
 class Users(Base, BaseModel):
     __tablename__ =  "tb_users"

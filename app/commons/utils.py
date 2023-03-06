@@ -1,3 +1,5 @@
+from fastapi import Depends
+from fastapi.security import APIKeyHeader
 from passlib.context import CryptContext
 from jose import jwt
 from datetime import datetime, timedelta
@@ -50,3 +52,12 @@ def create_access_token(subject: Union[str, Any], expires_delta: int = None) -> 
 
     return encoded
 
+
+async def api_token(token: str = Depends(APIKeyHeader(name="token"))):
+    '''
+    verify token
+    :param token:
+    :return:
+    '''
+    if not token:
+        raise Exception('empty token')
