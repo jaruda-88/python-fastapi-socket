@@ -4,7 +4,7 @@ from fastapi.security import OAuth2PasswordBearer
 from commons.config import conf, LOGTYPE
 from commons.logger import logger
 from routers.rooms import test_client
-from routers.users import auth, verify
+from routers.users import auth, verify, update
 from starlette.middleware.cors import CORSMiddleware
 from sockets.manager import WSManager
 from databases import handler, models
@@ -50,6 +50,7 @@ def create_app():
         app.include_router(test_client.router) 
     app.include_router(auth.router)
     app.include_router(verify.router)
+    app.include_router(update.router)
 
     return app
 

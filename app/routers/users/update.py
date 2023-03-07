@@ -15,7 +15,6 @@ async def modify(data: UserRegister, session: Session = Depends(db.session)):
 
     try:
         name = data.user_name
-        hashPwd = get_hashed_password(data.password)
 
         user = Users.get(session, user_name=name)
 
@@ -25,12 +24,14 @@ async def modify(data: UserRegister, session: Session = Depends(db.session)):
         if not verify_password(data.password, user.password):
             raise Exception('incorrect password')
 
-        user.update(data)
+        user.user_name = data.user_name
+        user.nick_name = data.nick_name
+        user.password = get_hashed_password(data.password)
         session.commit()
     except Exception as ex:
         return JSONResponse(status_code=400, content=dict(msg=f"{ex.args[0]}"))
     else: 
-        return user
+        return True if user else False
 
 
 # from fastapi import APIRouter, Depends

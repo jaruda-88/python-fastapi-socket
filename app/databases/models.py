@@ -119,6 +119,9 @@ class Members(Base, BaseModel):
     __tablename__ = "tb_members"    
 
     user_id = Column(Integer, ForeignKey('tb_users.id'))
-    room_id = Column(Integer, ForeignKey('tb_members.id'))
+    room_id = Column(Integer, ForeignKey('tb_rooms.id'))
+
+    users = relationship("tb_users")
+    rooms = relationship("tb_rooms")
 
 
