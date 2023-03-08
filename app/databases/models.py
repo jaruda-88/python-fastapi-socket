@@ -16,6 +16,11 @@ class BaseModel:
     created_at = Column(DateTime, nullable=False, default=func.utc_timestamp())
     updated_at = Column(DateTime, nullable=False, default=func.utc_timestamp(), onupdate=func.utc_timestamp())
 
+    def __init__(self):
+        self._q = None
+        self._session = None
+        self.served = None
+
     def __hash__(self):
         return hash(self.id)
 
@@ -47,7 +52,7 @@ class BaseModel:
     @classmethod
     def get(cls, session: Session = None, **kwargs):
         '''
-        get a row
+        simple get a row
         :param session:
         :param kwargs:
         :return:
@@ -71,33 +76,115 @@ class BaseModel:
         return result
 
     @classmethod
-    def update(cls, session: Session, update: dict, **kwargs):
+    def filter(cls, session: Session = None, **kwargs):
         '''
-        update a row
+        filter get a row
         :param session:
-        :param upddate:
+        :param kwargs: {'column__comparison operation':value}
+        :return model:
+        '''
+        
+        cond = []
+        for key, val in kwargs.items():
+            keys = key.split('__')
+            
+            if len(keys) > 2 or len(keys) != 2:
+                raise Exception('key is out of form')
+
+            col = getattr(cls, keys[0])
+
+            match keys[1]:
+                case 'eq':
+                    cond.append((col == val))
+                case 'gt':
+                    cond.append((col > val))
+                case 'ge':
+                    cond.append((col >= val))
+                case 'lt':
+                    cond.append((col < val))
+                case 'le':
+                    cond.append((col <= val))
+                case 'in':
+                    cond.append((col.in_(val)))
+
+        obj = cls()
+
+        if session:
+            obj._session = session
+            obj.served = True
+        else:
+            obj._session = next(db.session())
+            obj.served = False
+
+        query = obj._session.query(cls)
+        query = query.filter(*cond)
+
+        obj._q = query
+
+        return obj
+
+    def update(self, auto_commit: bool = False, **kwargs):
+        '''
+        should be filter -> update row
+        :param auto_commit:
         :param kwargs:
-        :return:
+        :return row:
         '''
 
-        s = next(db.session()) if not session else session
-        query = s.query(cls)
+        qs = self._q.update(kwargs)
+        result = None
 
-        for key, val in kwargs.items():
-            col = getattr(cls, key)
-            query = query.filter(col == val)
+        self._session.flush()
+
+        if qs > 0:
+            result = self._q.first()
         
-        if query.count() > 1:
-            raise Exception('Only one row')
+        if auto_commit:
+            self._session.commit()
 
-        result = query.first()
-        result.update(update)
-        s.commit()
+        return result
 
-        if not session:
-            s.close()
+    def first(self):
+        '''
+        should be filter -> first
+        '''
 
-        return result 
+        result = self._q.first()
+        self.close()
+        return result
+    
+    def all(self):
+        '''
+        should be filter -> all
+        '''
+
+        result = self._q.all()
+        self.close()
+        return result
+
+    def count(self):
+        '''
+        should be filter -> count
+        '''
+
+        result = self._q.count()
+        self.close()
+        return result
+
+    def delete(self, auto_commit: bool = False):
+        '''
+        should be filter -> delete
+        '''
+
+        self._q.delete()
+        if auto_commit:
+            self._session.commit()
+
+    def close(self):
+        if not self.served:
+            self._session.close()
+        else:
+            self._session.flush()
 
 
 
@@ -121,7 +208,7 @@ class Members(Base, BaseModel):
     user_id = Column(Integer, ForeignKey('tb_users.id'))
     room_id = Column(Integer, ForeignKey('tb_rooms.id'))
 
-    users = relationship("tb_users")
-    rooms = relationship("tb_rooms")
+    users = relationship("Users")
+    rooms = relationship("Rooms")
 
 
