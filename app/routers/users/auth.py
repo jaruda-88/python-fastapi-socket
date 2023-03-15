@@ -10,7 +10,7 @@ from databases.schemas import UserRegister, Base, Token
 router = APIRouter(prefix="/auth")
 
 
-@router.post('/signup', status_code=201, response_model=Base, tags=["user_management"])
+@router.post('/signup', status_code=201, response_model=Base)
 async def register(data: UserRegister, session: Session = Depends(db.session)):
     '''
     회원가입
@@ -39,7 +39,7 @@ async def register(data: UserRegister, session: Session = Depends(db.session)):
         return dict(id=newUser.id)
 
 
-@router.post('/signin', status_code=200, response_model=Token, tags=["user_management"])
+@router.post('/signin', status_code=200, response_model=Token)
 async def login(data: OAuth2PasswordRequestForm = Depends()):
     '''
     로그인

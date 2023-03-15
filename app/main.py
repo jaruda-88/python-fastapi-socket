@@ -1,5 +1,5 @@
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.security import OAuth2PasswordBearer
 from commons.config import conf, LOGTYPE
 from commons.logger import logger
@@ -8,6 +8,7 @@ from routers.users import auth, verify, update
 from starlette.middleware.cors import CORSMiddleware
 from sockets.manager import WSManager
 from databases import handler, models
+from commons.utils import api_token
 
 
 def create_app():
@@ -48,9 +49,9 @@ def create_app():
     # set router
     if config.DEBUG == LOGTYPE.TEST:
         app.include_router(test_client.router) 
-    app.include_router(auth.router)
-    app.include_router(verify.router)
-    app.include_router(update.router)
+    app.include_router(auth.router, tags=["user_management"])
+    app.include_router(verify.router, tags=["user_management"])
+    app.include_router(update.router, tags=['user_management'], dependencies=[Depends(api_token)])
 
     return app
 

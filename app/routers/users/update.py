@@ -4,12 +4,12 @@ from sqlalchemy.orm import Session
 from databases.handler import db
 from databases.models import Users
 from databases.schemas import UserRegister, Check
-from commons.utils import get_hashed_password, verify_password, api_token
+from commons.utils import get_hashed_password, verify_password
 
 router = APIRouter(prefix="/user")
 
 
-@router.post('/edit', dependencies=[Depends(api_token)], status_code=200, response_model=Check, tags=['user_management'])
+@router.post('/edit', status_code=200, response_model=Check)
 async def modify(data: UserRegister, session: Session = Depends(db.session)):
     ''''''
 

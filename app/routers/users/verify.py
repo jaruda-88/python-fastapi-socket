@@ -8,7 +8,7 @@ from databases.schemas import Check
 router = APIRouter(prefix="/user")
 
 
-@router.get('/check/{name}', status_code=200, tags=["user_management"], response_model=Check)
+@router.get('/check/{name}', status_code=200, response_model=Check)
 async def check_user_name(name: str, session: Session = Depends(db.session)):
     '''
     check user_name

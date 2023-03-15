@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import List
 
 class Base(BaseModel):
     id: int
@@ -22,5 +23,9 @@ class UserRegister(UserBase):
 class UserInfo(UserBase, Base):
     created_at: str
     updated_at: str
+
+class RoomRegister(BaseModel):
+    user_ids: List[int] = []
+    room_name: str
     
 

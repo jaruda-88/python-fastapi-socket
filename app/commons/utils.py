@@ -59,5 +59,6 @@ async def api_token(token: str = Depends(APIKeyHeader(name="token"))):
     :param token:
     :return:
     '''
+    
     if not token:
         raise Exception('empty token')
