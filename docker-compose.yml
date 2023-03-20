@@ -29,21 +29,21 @@ services:
       timeout: 60s
       retries: 10
   
-  # fs-api:
-  #   build:
-  #     context: ./app
-  #     image: "fs:0.0.1"
-  #     restart: always
-  #     container_name: fs-api
-  #     environment:
-  #       MYSQL_ROOT_PASSWORD: admin
-  #       MYSQL_DATABASE: db_fs
-  #       API_ENV: local
-  #     ports:
-  #       - "8000:8000"
-  #     networks:
-  #       - default
-  #       - chat-net
-  #     depens_on:
-  #       fs-db:
-  #         condition: service_healthy
+  fs-api:
+    build:
+      context: ./app
+      image: "fs:0.0.1"
+      restart: always
+      container_name: fs-api
+      environment:
+        MYSQL_ROOT_PASSWORD: admin
+        MYSQL_DATABASE: db_fs
+        API_ENV: local
+      ports:
+        - "8000:8000"
+      networks:
+        - default
+        - chat-net
+      depens_on:
+        fs-db:
+          condition: service_healthy
