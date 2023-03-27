@@ -23,24 +23,24 @@ class Manager:
 
     
     @connections.setter
-    def connections(self, room_name:str):
+    def connections(self, room_id:int):
 
-        if room_name not in self._connections:
-            self._connections[room_name] = []
+        if room_id not in self._connections:
+            self._connections[room_id] = []
 
     
-    async def connect(self, websocket: WebSocket, room_name:str, user_name:str):
+    async def connect(self, websocket: WebSocket, room_id:int, user_id:int):
 
         await websocket.accept()
-        self.connections = room_name
-        self._connections[room_name].append(websocket)
-        logger.print(f"connected : {self._connections[room_name]}")
+        self.connections = room_id
+        self._connections[room_id].append(websocket)
+        logger.print(f"connected : {self._connections[room_id]}")
 
     
-    def disconnect(self, websocket: WebSocket, room_name:str, user_name:str):
+    def disconnect(self, websocket: WebSocket, room_id:int, user_id:int):
 
-        self._connections[room_name].remove(websocket)
-        logger.print(f"disconnecting : {self._connections[room_name]}")
+        self._connections[room_id].remove(websocket)
+        logger.print(f"disconnecting : {self._connections[room_id]}")
 
     
     async def send_msg(self, message:str, websocket:WebSocket):

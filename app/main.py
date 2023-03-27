@@ -4,7 +4,7 @@ from fastapi.security import OAuth2PasswordBearer
 from commons.config import conf, LOGTYPE
 from commons.logger import logger
 from routers.rooms import test_client
-from routers.users import auth, verify, update
+from routers.users import (auth, verify, update)
 from starlette.middleware.cors import CORSMiddleware
 from sockets.manager import WSManager
 from databases import handler, models
