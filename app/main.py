@@ -3,7 +3,7 @@ from fastapi import FastAPI, Depends
 from fastapi.security import OAuth2PasswordBearer
 from commons.config import conf, LOGTYPE
 from commons.logger import logger
-from routers.rooms import test_client
+from routers.rooms import test_client, index
 from routers.users import (auth, verify, update)
 from starlette.middleware.cors import CORSMiddleware
 from sockets.manager import WSManager
@@ -52,6 +52,7 @@ def create_app():
     app.include_router(auth.router, tags=["user_management"])
     app.include_router(verify.router, tags=["user_management"])
     app.include_router(update.router, tags=['user_management'], dependencies=[Depends(api_token)])
+    app.include_router(index.router, tags=['room_,management'], deprecated=[Depends(api_token)])
 
     return app
 
