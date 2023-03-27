@@ -15,7 +15,8 @@ async def websocket_endpoint(websocket: WebSocket, room_id:int, user_id:int):
         if not room:
             raise Exception('not found room')
 
-        member = Members.filter(room_id__eq=room.id, user_id__eq=user_id)
+        filterMember = Members.filter(room_id__eq=room.id, user_id__eq=user_id)
+        member = filterMember.first()
 
         if not member:
             raise Exception(f'user:{user_id} is not in room:{room.name}')
